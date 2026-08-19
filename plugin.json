@@ -1,0 +1,19 @@
+{
+	"id": "nodebb-plugin-asyntai",
+	"name": "Asyntai AI Chatbot",
+	"description": "Puts an Asyntai AI chat assistant on your forum.",
+	"url": "https://github.com/asyntai/nodebb-plugin-asyntai",
+	"library": "./library.js",
+	"hooks": [
+		{ "hook": "static:app.load", "method": "init" },
+		{ "hook": "filter:admin.header.build", "method": "addAdminNavigation" },
+		{ "hook": "filter:config.get", "method": "appendConfig" }
+	],
+	"scripts": [
+		"public/lib/main.js"
+	],
+	"modules": {
+		"../admin/plugins/asyntai.js": "./public/lib/admin.js"
+	},
+	"templates": "templates"
+}

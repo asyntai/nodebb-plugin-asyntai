@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo:7
+    command: ["--quiet"]
+    volumes:
+      - mongodata:/data/db
+  nodebb:
+    image: ghcr.io/nodebb/nodebb:latest
+    ports:
+      - "4567:4567"
+    depends_on:
+      - mongo
+    environment:
+      NODEBB_URL: "http://localhost:4567"
+      NODEBB_ADMIN_USERNAME: "asyntaiadmin"
+      NODEBB_ADMIN_PASSWORD: "AsyntaiTest123!"
+      NODEBB_ADMIN_EMAIL: "admin@example.com"
+      NODEBB_DB: "mongo"
+      NODEBB_DB_HOST: "mongo"
+      NODEBB_DB_PORT: "27017"
+      NODEBB_DB_NAME: "nodebb"
+      NODEBB_ADDITIONAL_PLUGINS: "/plugin-src"
+    volumes:
+      - nodebbconfig:/opt/config
+      - nodebbbuild:/usr/src/app/build
+      - nodebbuploads:/usr/src/app/public/uploads
+      - ./plugin:/plugin-src:ro
+volumes:
+  mongodata:
+  nodebbconfig:
+  nodebbbuild:
+  nodebbuploads:
