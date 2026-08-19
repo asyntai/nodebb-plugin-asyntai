@@ -1,0 +1,35 @@
+# Publishes the plugin to npm.
+#
+# Runs when a GitHub release is created, and can also be started by hand from
+# the Actions tab. The npm granular access token lives in the repository
+# secret NPM_TOKEN.
+#
+# Two things to keep in mind. An npm token with write access expires after 90
+# days, so the secret needs replacing a few times a year. And from January
+# 2027 npm stops letting a 2FA-bypass token publish directly, so this workflow
+# will need trusted publishing (OIDC) by then.
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Unit tests
+        run: node --test tests/test_loader.mjs
+
+      - name: Publish
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
