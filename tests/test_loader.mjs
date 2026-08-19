@@ -9,10 +9,19 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import vm from 'node:vm';
 
-const ROOT = new URL('../nodebb-plugin-asyntai/', import.meta.url);
+// The plugin sits beside this folder in the Asyntai project tree, and at the
+// root in the published repository. Both layouts are supported.
+const ROOT = ['../', '../nodebb-plugin-asyntai/']
+	.map(path => new URL(path, import.meta.url))
+	.find(url => existsSync(new URL('library.js', url)));
+
+if (!ROOT) {
+	throw new Error('library.js was not found next to the tests');
+}
+
 
 /**
  * Loads library.js outside a forum.
